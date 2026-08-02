@@ -20,8 +20,8 @@
         .input-yellow:focus { border-color: #005A9E; box-shadow: 0 0 5px rgba(0, 90, 158, 0.3); }
         
         .input-error {
-            border-color: #e53935 !important; 
-            background-color: #ffebee !important; 
+            border-color: #e53935 !important;
+            background-color: #ffebee !important;
             box-shadow: 0 0 5px rgba(229, 57, 53, 0.5) !important;
         }
         
@@ -30,7 +30,7 @@
         .btn-main:active { transform: scale(0.98); }
 
         .action-buttons { display: flex; justify-content: flex-end; gap: 15px; margin-bottom: 15px; }
-        .btn-export { color: white; padding: 10px 15px; border: none; border-radius: 6px; cursor: pointer; font-family: 'Times New Roman', Times, serif; font-size: 12pt; font-weight: bold; transition: background-color 0.3s; }
+        .btn-export { color: white; padding: 10px 15px; border: none; border-radius: 6px; cursor: pointer; font-family: 'Times New Roman', Times, serif; font-size: 12pt; font-weight: bold; transition: background-color 0.3s; display: flex; justify-content: center; align-items: center; }
         .btn-excel { background-color: #217346; }
         .btn-excel:hover { background-color: #164f2f; }
         .btn-pdf { background-color: #e53935; }
@@ -39,41 +39,49 @@
         #resultSection { display: none; margin-top: 30px; animation: fadeIn 0.5s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* Bọc bảng để trượt ngang trên Mobile */
-        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; border-radius: 8px; min-width: 600px; }
+        /* Bọc bảng để cuộn ngang trên thiết bị di động */
+        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; min-width: 600px; /* Đảm bảo bảng không bị bóp méo quá mức */ }
         th, td { border: 1px solid #ddd; padding: 10px; text-align: right; }
         th:first-child, td:first-child { text-align: center; }
         th { background-color: #005A9E; color: white; }
         tr:nth-child(even) { background-color: #f9f9f9; }
         h3 { font-size: 14pt; }
 
-        .summary-info {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            background-color: #e9f2fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border-left: 5px solid #005A9E;
-        }
+        .summary-info { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background-color: #e9f2fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #005A9E; }
         .summary-info p { margin: 5px 0; }
 
-        /* --- BỘ MÃ MEDIA QUERIES TỐI ƯU MOBILE & IPAD --- */
+        /* --- BẮT ĐẦU CSS RESPONSIVE CHO ĐIỆN THOẠI & IPAD --- */
+
+        /* Màn hình Tablet (Ví dụ: iPad dọc) */
         @media (max-width: 768px) {
-            body { padding: 10px; font-size: 12pt; }
-            .container { padding: 15px; }
-            /* Chuyển các lưới 2 cột thành 1 cột */
-            .grid-form { grid-template-columns: 1fr; gap: 15px; }
-            .summary-info { grid-template-columns: 1fr; }
-            /* Điều chỉnh lại khoảng cách nút bấm chính */
-            .btn-main { grid-column: span 1; padding: 12px; font-size: 12pt; }
-            /* Canh giữa các nút tải về */
-            .action-buttons { justify-content: center; flex-wrap: wrap; }
-            h2 { font-size: 14pt; margin-bottom: 15px; }
+            body { padding: 10px; }
+            .container { padding: 20px; }
         }
+
+        /* Màn hình Điện thoại di động */
+        @media (max-width: 600px) {
+            .grid-form { 
+                grid-template-columns: 1fr; /* Đưa form về 1 cột */
+                gap: 15px; 
+            }
+            .btn-main { 
+                grid-column: span 1; /* Nút bấm chỉ chiếm 1 cột thay vì 2 như trước */
+                padding: 15px;
+            }
+            .summary-info { 
+                grid-template-columns: 1fr; /* Khối tóm tắt thông tin cũng về 1 cột */
+            }
+            .action-buttons { 
+                flex-direction: column; /* Xếp dọc các nút tải Excel/PDF */
+                gap: 10px; 
+            }
+            .btn-export { 
+                width: 100%; /* Các nút tải rộng toàn màn hình để dễ chạm */
+                padding: 12px;
+            }
+        }
+        /* --- KẾT THÚC CSS RESPONSIVE --- */
     </style>
 </head>
 <body>
@@ -125,7 +133,7 @@
             
             <div id="thongTinTomTat" class="summary-info"></div>
 
-            <!-- Đã bọc bảng vào thẻ div class="table-responsive" -->
+            <!-- Đã bọc bảng vào trong div.table-responsive để hỗ trợ cuộn ngang trên điện thoại -->
             <div class="table-responsive">
                 <table id="bangKetQua">
                     <thead>
@@ -145,6 +153,7 @@
 </div>
 
 <script>
+    // Hàm hỗ trợ định dạng số tiền
     function dinhDangTienTe(input) {
         let giaTri = input.value.replace(/\D/g, "");
         if (giaTri !== "") {
@@ -154,6 +163,7 @@
         }
     }
 
+    // Hàm xóa viền đỏ khi người dùng gõ vào ô
     function xoaLoi(element) {
         element.classList.remove('input-error');
     }
@@ -179,22 +189,10 @@
 
         let thieuThongTin = []; 
 
-        if (rawLoanAmountString === "") {
-            thieuThongTin.push("Số Tiền Vay");
-            elLoanAmount.classList.add('input-error'); 
-        }
-        if (rawTermString === "") {
-            thieuThongTin.push("Thời Gian Vay");
-            elLoanTerm.classList.add('input-error');
-        }
-        if (rawInitialRateString === "") {
-            thieuThongTin.push("Lãi Suất Ưu Đãi");
-            elInitialRate.classList.add('input-error');
-        }
-        if (rawInitialMonthsString === "") {
-            thieuThongTin.push("Số Tháng Hưởng Ưu Đãi");
-            elInitialMonths.classList.add('input-error');
-        }
+        if (rawLoanAmountString === "") { thieuThongTin.push("Số Tiền Vay"); elLoanAmount.classList.add('input-error'); }
+        if (rawTermString === "") { thieuThongTin.push("Thời Gian Vay"); elLoanTerm.classList.add('input-error'); }
+        if (rawInitialRateString === "") { thieuThongTin.push("Lãi Suất Ưu Đãi"); elInitialRate.classList.add('input-error'); }
+        if (rawInitialMonthsString === "") { thieuThongTin.push("Số Tháng Hưởng Ưu Đãi"); elInitialMonths.classList.add('input-error'); }
 
         if (thieuThongTin.length > 0) {
             let thongBaoLoi = "Vui lòng điền các thông tin bắt buộc sau:\n- " + thieuThongTin.join("\n- ");
@@ -203,7 +201,6 @@
         }
 
         const customerName = rawCustomerName ? rawCustomerName.toUpperCase() : "CHƯA CẬP NHẬT";
-        
         const rawLoanAmount = rawLoanAmountString.replace(/\./g, "");
         const loanAmount = parseFloat(rawLoanAmount);
         const totalMonths = parseInt(rawTermString);
