@@ -48,7 +48,6 @@
         #resultSection { display: none; margin-top: 30px; animation: fadeIn 0.5s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* Bọc bảng để trượt ngang trên Mobile */
         .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
         
         table { width: 100%; border-collapse: collapse; margin-top: 10px; border-radius: 8px; min-width: 600px; }
@@ -70,16 +69,12 @@
         }
         .summary-info p { margin: 5px 0; }
 
-        /* --- BỘ MÃ MEDIA QUERIES TỐI ƯU MOBILE & IPAD --- */
         @media (max-width: 768px) {
             body { padding: 10px; font-size: 12pt; }
             .container { padding: 15px; }
-            /* Chuyển các lưới 2 cột thành 1 cột */
             .grid-form { grid-template-columns: 1fr; gap: 15px; }
             .summary-info { grid-template-columns: 1fr; }
-            /* Điều chỉnh lại khoảng cách nút bấm chính */
             .btn-main { grid-column: span 1; padding: 12px; font-size: 12pt; }
-            /* Canh giữa các nút tải về */
             .action-buttons { justify-content: center; flex-wrap: wrap; }
             h2 { font-size: 14pt; margin-bottom: 15px; }
         }
@@ -134,7 +129,6 @@
             
             <div id="thongTinTomTat" class="summary-info"></div>
 
-            <!-- Đã bọc bảng vào thẻ div class="table-responsive" -->
             <div class="table-responsive">
                 <table id="bangKetQua">
                     <thead>
@@ -341,12 +335,20 @@
         let tenFile = tenKH.replace(/\s+/g, '_');
 
         let element = document.getElementById("vungInPDF");
+        
+        // Tinh chỉnh cấu hình xuất PDF cho thiết bị di động
         let opt = {
-            margin:       [15, 10, 15, 10], 
+            // Margin [Trên, Phải, Dưới, Trái]: Tăng lề trên và lề dưới để tạo không gian đẹp hơn
+            margin:       [20, 15, 20, 15], 
             filename:     `Lich_Tra_No_${tenFile}.pdf`,
             image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2 },
+            html2canvas:  { 
+                scale: 2, 
+                // windowWidth 800: Ép thư viện giả lập màn hình máy tính để bảng không bị méo trên điện thoại
+                windowWidth: 800 
+            },
             jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            // Tránh việc bảng bị ngắt ngang một dòng (tr) bất hợp lý khi qua trang mới
             pagebreak:    { avoid: 'tr' } 
         };
 
