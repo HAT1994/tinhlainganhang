@@ -1,15 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-T1HVHB6K9J"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-T1HVHB6K9J');
-</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bảng Tính Gốc Lãi Vay (Dự Kiến)</title>
@@ -21,7 +12,6 @@
         body { font-family: 'Times New Roman', Times, serif; font-size: 13pt; background-color: #f0f4f8; margin: 0; padding: 20px; }
         .container { max-width: 1000px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
         h2 { color: #005A9E; text-align: center; margin-bottom: 25px; font-size: 16pt; }
-        
         .grid-form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; }
         .form-group { display: flex; flex-direction: column; }
         label { margin-bottom: 8px; font-weight: bold; color: #333; }
@@ -30,8 +20,8 @@
         .input-yellow:focus { border-color: #005A9E; box-shadow: 0 0 5px rgba(0, 90, 158, 0.3); }
         
         .input-error {
-            border-color: #e53935 !important; 
-            background-color: #ffebee !important; 
+            border-color: #e53935 !important;
+            background-color: #ffebee !important;
             box-shadow: 0 0 5px rgba(229, 57, 53, 0.5) !important;
         }
         
@@ -40,7 +30,7 @@
         .btn-main:active { transform: scale(0.98); }
 
         .action-buttons { display: flex; justify-content: flex-end; gap: 15px; margin-bottom: 15px; }
-        .btn-export { color: white; padding: 10px 15px; border: none; border-radius: 6px; cursor: pointer; font-family: 'Times New Roman', Times, serif; font-size: 12pt; font-weight: bold; transition: background-color 0.3s; }
+        .btn-export { color: white; padding: 10px 15px; border: none; border-radius: 6px; cursor: pointer; font-family: 'Times New Roman', Times, serif; font-size: 12pt; font-weight: bold; transition: background-color 0.3s; display: flex; justify-content: center; align-items: center; }
         .btn-excel { background-color: #217346; }
         .btn-excel:hover { background-color: #164f2f; }
         .btn-pdf { background-color: #e53935; }
@@ -49,36 +39,49 @@
         #resultSection { display: none; margin-top: 30px; animation: fadeIn 0.5s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         
-        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; border-radius: 8px; min-width: 600px; }
+        /* Bọc bảng để cuộn ngang trên thiết bị di động */
+        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; min-width: 600px; /* Đảm bảo bảng không bị bóp méo quá mức */ }
         th, td { border: 1px solid #ddd; padding: 10px; text-align: right; }
         th:first-child, td:first-child { text-align: center; }
         th { background-color: #005A9E; color: white; }
         tr:nth-child(even) { background-color: #f9f9f9; }
         h3 { font-size: 14pt; }
 
-        .summary-info {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            background-color: #e9f2fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border-left: 5px solid #005A9E;
-        }
+        .summary-info { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background-color: #e9f2fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #005A9E; }
         .summary-info p { margin: 5px 0; }
 
+        /* --- BẮT ĐẦU CSS RESPONSIVE CHO ĐIỆN THOẠI & IPAD --- */
+
+        /* Màn hình Tablet (Ví dụ: iPad dọc) */
         @media (max-width: 768px) {
-            body { padding: 10px; font-size: 12pt; }
-            .container { padding: 15px; }
-            .grid-form { grid-template-columns: 1fr; gap: 15px; }
-            .summary-info { grid-template-columns: 1fr; }
-            .btn-main { grid-column: span 1; padding: 12px; font-size: 12pt; }
-            .action-buttons { justify-content: center; flex-wrap: wrap; }
-            h2 { font-size: 14pt; margin-bottom: 15px; }
+            body { padding: 10px; }
+            .container { padding: 20px; }
         }
+
+        /* Màn hình Điện thoại di động */
+        @media (max-width: 600px) {
+            .grid-form { 
+                grid-template-columns: 1fr; /* Đưa form về 1 cột */
+                gap: 15px; 
+            }
+            .btn-main { 
+                grid-column: span 1; /* Nút bấm chỉ chiếm 1 cột thay vì 2 như trước */
+                padding: 15px;
+            }
+            .summary-info { 
+                grid-template-columns: 1fr; /* Khối tóm tắt thông tin cũng về 1 cột */
+            }
+            .action-buttons { 
+                flex-direction: column; /* Xếp dọc các nút tải Excel/PDF */
+                gap: 10px; 
+            }
+            .btn-export { 
+                width: 100%; /* Các nút tải rộng toàn màn hình để dễ chạm */
+                padding: 12px;
+            }
+        }
+        /* --- KẾT THÚC CSS RESPONSIVE --- */
     </style>
 </head>
 <body>
@@ -128,8 +131,9 @@
         <div id="vungInPDF">
             <h3 style="color: #005A9E; border-bottom: 2px solid #005A9E; padding-bottom: 5px;">Chi Tiết Lịch Trả Nợ (Dự kiến)</h3>
             
-            <div id="thongTomTat" class="summary-info"></div>
+            <div id="thongTinTomTat" class="summary-info"></div>
 
+            <!-- Đã bọc bảng vào trong div.table-responsive để hỗ trợ cuộn ngang trên điện thoại -->
             <div class="table-responsive">
                 <table id="bangKetQua">
                     <thead>
@@ -149,6 +153,7 @@
 </div>
 
 <script>
+    // Hàm hỗ trợ định dạng số tiền
     function dinhDangTienTe(input) {
         let giaTri = input.value.replace(/\D/g, "");
         if (giaTri !== "") {
@@ -158,6 +163,7 @@
         }
     }
 
+    // Hàm xóa viền đỏ khi người dùng gõ vào ô
     function xoaLoi(element) {
         element.classList.remove('input-error');
     }
@@ -183,22 +189,10 @@
 
         let thieuThongTin = []; 
 
-        if (rawLoanAmountString === "") {
-            thieuThongTin.push("Số Tiền Vay");
-            elLoanAmount.classList.add('input-error'); 
-        }
-        if (rawTermString === "") {
-            thieuThongTin.push("Thời Gian Vay");
-            elLoanTerm.classList.add('input-error');
-        }
-        if (rawInitialRateString === "") {
-            thieuThongTin.push("Lãi Suất Ưu Đãi");
-            elInitialRate.classList.add('input-error');
-        }
-        if (rawInitialMonthsString === "") {
-            thieuThongTin.push("Số Tháng Hưởng Ưu Đãi");
-            elInitialMonths.classList.add('input-error');
-        }
+        if (rawLoanAmountString === "") { thieuThongTin.push("Số Tiền Vay"); elLoanAmount.classList.add('input-error'); }
+        if (rawTermString === "") { thieuThongTin.push("Thời Gian Vay"); elLoanTerm.classList.add('input-error'); }
+        if (rawInitialRateString === "") { thieuThongTin.push("Lãi Suất Ưu Đãi"); elInitialRate.classList.add('input-error'); }
+        if (rawInitialMonthsString === "") { thieuThongTin.push("Số Tháng Hưởng Ưu Đãi"); elInitialMonths.classList.add('input-error'); }
 
         if (thieuThongTin.length > 0) {
             let thongBaoLoi = "Vui lòng điền các thông tin bắt buộc sau:\n- " + thieuThongTin.join("\n- ");
@@ -207,7 +201,6 @@
         }
 
         const customerName = rawCustomerName ? rawCustomerName.toUpperCase() : "CHƯA CẬP NHẬT";
-        
         const rawLoanAmount = rawLoanAmountString.replace(/\./g, "");
         const loanAmount = parseFloat(rawLoanAmount);
         const totalMonths = parseInt(rawTermString);
@@ -236,7 +229,7 @@
             htmlAnHanGoc = `<p><strong>Thời gian ân hạn gốc:</strong> ${gracePeriod} tháng</p>`;
         }
 
-        document.getElementById('thongTomTat').innerHTML = `
+        document.getElementById('thongTinTomTat').innerHTML = `
             <div>
                 <p><strong>Tên Khách hàng:</strong> ${customerName}</p>
                 <p><strong>Số tiền vay:</strong> ${loanAmount.toLocaleString('vi-VN')} VNĐ</p>
@@ -329,45 +322,46 @@
         
         XLSX.writeFile(workbook, `Lich_Tra_No_${tenFile}.xlsx`);
     }
-
-    // --- ĐÃ CẬP NHẬT HÀM TẢI PDF ĐỂ FIX LỀ VÀ THÊM BẢN QUYỀN ---
     function taiPDF() {
+        // 1. Lấy tên khách hàng để đặt tên file PDF
         let rawName = document.getElementById('customerName').value.trim();
         let tenKH = rawName ? rawName.toUpperCase() : 'KHACH_HANG';
         let tenFile = tenKH.replace(/\s+/g, '_');
 
         let element = document.getElementById("vungInPDF");
         
+        // 2. KHẮC PHỤC LỖI MẤT THÔNG TIN
+        // Tìm thẻ bọc bảng và tạm thời vô hiệu hóa thanh cuộn ngang
+        let tableWrapper = document.querySelector('.table-responsive');
+        if (tableWrapper) {
+            tableWrapper.style.overflowX = 'visible';
+        }
+
+        // 3. CẤU HÌNH XUẤT PDF CHUYÊN SÂU HƠN
         let opt = {
-            // Thiết lập lề: [Trên 10mm, Phải 15mm, Dưới 10mm, Trái 15mm]
-            margin:       [10, 15, 10, 15], 
+            // Căn lề: [Trên, Trái, Dưới, Phải] tính bằng mm. 
+            // Tăng lề trên và dưới lên 20mm để văn bản không bị sát mép giấy.
+            margin:       [20, 10, 20, 10], 
             filename:     `Lich_Tra_No_${tenFile}.pdf`,
             image:        { type: 'jpeg', quality: 0.98 },
             html2canvas:  { 
                 scale: 2, 
-                windowWidth: 800 // Quan trọng để bảng không bị méo trên điện thoại
+                // Ép thư viện mô phỏng màn hình máy tính (1000px) để không bị co móp giao diện
+                windowWidth: 1000 
             },
             jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-            // Tránh ngắt dòng (tr) giữa chừng khi qua trang
-            pagebreak:    { mode: 'css', avoid: 'tr' } 
+            // Quản lý ngắt trang: 'avoid: tr' đảm bảo các hàng (tr) không bị cắt làm đôi giữa 2 trang
+            pagebreak:    { mode: ['css', 'legacy'], avoid: 'tr' } 
         };
 
-        // Sử dụng Promise để can thiệp vào từng trang PDF trước khi lưu
-        html2pdf().set(opt).from(element).toPdf().get('pdf').then(function (pdf) {
-            // Lấy tổng số trang vừa tạo ra
-            var totalPages = pdf.internal.getNumberOfPages();
-            
-            // Lặp qua từng trang một
-            for (var i = 1; i <= totalPages; i++) {
-                pdf.setPage(i); // Di chuyển đến trang thứ i
-                pdf.setFontSize(10); // Cỡ chữ bản quyền
-                pdf.setTextColor(150); // Màu xám nhạt cho đỡ rối mắt
-                
-                // Căn giữa dòng chữ ở vị trí X=105 (giữa khổ giấy A4) và Y=288 (Sát mép dưới 10mm)
-                var footerText = "© Bản quyền thuộc về Ngân hàng TMCP Tài Lộc - Lưu hành nội bộ";
-                pdf.text(footerText, 105, 288, { align: 'center' });
+        // 4. TIẾN HÀNH XUẤT PDF
+        // Dùng Promise (.then) để chờ PDF tạo xong, sau đó phục hồi lại giao diện cũ
+        html2pdf().set(opt).from(element).save().then(() => {
+            // Trả lại thanh cuộn ngang cho giao diện điện thoại
+            if (tableWrapper) {
+                tableWrapper.style.overflowX = 'auto';
             }
-        }).save();
+        });
     }
 </script>
 
