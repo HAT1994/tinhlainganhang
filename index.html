@@ -28,10 +28,9 @@
         .input-yellow { padding: 10px; border: 1px solid #ccc; border-radius: 10px; font-family: 'Times New Roman', Times, serif; font-size: 13pt; background-color: #fff9c4; border-color: #fbc02d; outline: none; transition: all 0.3s; }
         .input-yellow:focus { border-color: #005A9E; box-shadow: 0 0 5px rgba(0, 90, 158, 0.3); }
         
-        /* 1. THÊM CSS CHO Ô NHẬP LỖI (BÔI ĐỎ) */
         .input-error {
-            border-color: #e53935 !important; /* Đỏ đậm */
-            background-color: #ffebee !important; /* Đỏ nhạt */
+            border-color: #e53935 !important; 
+            background-color: #ffebee !important; 
             box-shadow: 0 0 5px rgba(229, 57, 53, 0.5) !important;
         }
         
@@ -48,7 +47,11 @@
         
         #resultSection { display: none; margin-top: 30px; animation: fadeIn 0.5s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; border-radius: 8px; overflow: hidden; }
+        
+        /* Bọc bảng để trượt ngang trên Mobile */
+        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; border-radius: 8px; min-width: 600px; }
         th, td { border: 1px solid #ddd; padding: 10px; text-align: right; }
         th:first-child, td:first-child { text-align: center; }
         th { background-color: #005A9E; color: white; }
@@ -66,6 +69,20 @@
             border-left: 5px solid #005A9E;
         }
         .summary-info p { margin: 5px 0; }
+
+        /* --- BỘ MÃ MEDIA QUERIES TỐI ƯU MOBILE & IPAD --- */
+        @media (max-width: 768px) {
+            body { padding: 10px; font-size: 12pt; }
+            .container { padding: 15px; }
+            /* Chuyển các lưới 2 cột thành 1 cột */
+            .grid-form { grid-template-columns: 1fr; gap: 15px; }
+            .summary-info { grid-template-columns: 1fr; }
+            /* Điều chỉnh lại khoảng cách nút bấm chính */
+            .btn-main { grid-column: span 1; padding: 12px; font-size: 12pt; }
+            /* Canh giữa các nút tải về */
+            .action-buttons { justify-content: center; flex-wrap: wrap; }
+            h2 { font-size: 14pt; margin-bottom: 15px; }
+        }
     </style>
 </head>
 <body>
@@ -80,7 +97,6 @@
         </div>
         <div class="form-group">
             <label for="loanAmount">Số Tiền Vay (VNĐ):</label>
-            <!-- Thêm hàm xoaLoi(this) để xóa màu đỏ ngay khi người dùng bắt đầu nhập số -->
             <input type="text" id="loanAmount" class="input-yellow" placeholder="Ví dụ: 1.000.000.000" oninput="dinhDangTienTe(this); xoaLoi(this)">
         </div>
         <div class="form-group">
@@ -118,24 +134,26 @@
             
             <div id="thongTinTomTat" class="summary-info"></div>
 
-            <table id="bangKetQua">
-                <thead>
-                    <tr>
-                        <th>Tháng</th>
-                        <th>Tiền Gốc Còn Lại</th>
-                        <th>Gốc Phải Trả</th>
-                        <th>Lãi Phải Trả</th>
-                        <th>Tổng Gốc + Lãi</th>
-                    </tr>
-                </thead>
-                <tbody id="resultTableBody"></tbody>
-            </table>
+            <!-- Đã bọc bảng vào thẻ div class="table-responsive" -->
+            <div class="table-responsive">
+                <table id="bangKetQua">
+                    <thead>
+                        <tr>
+                            <th>Tháng</th>
+                            <th>Tiền Gốc Còn Lại</th>
+                            <th>Gốc Phải Trả</th>
+                            <th>Lãi Phải Trả</th>
+                            <th>Tổng Gốc + Lãi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultTableBody"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-    // Hàm hỗ trợ định dạng số tiền
     function dinhDangTienTe(input) {
         let giaTri = input.value.replace(/\D/g, "");
         if (giaTri !== "") {
@@ -145,25 +163,21 @@
         }
     }
 
-    // 2. HÀM MỚI: Xóa viền đỏ khi người dùng gõ vào ô
     function xoaLoi(element) {
         element.classList.remove('input-error');
     }
 
     function calculateLoan() {
-        // Lấy các thẻ (elements) để có thể thao tác gắn viền đỏ
         const elLoanAmount = document.getElementById('loanAmount');
         const elLoanTerm = document.getElementById('loanTerm');
         const elInitialRate = document.getElementById('initialRate');
         const elInitialMonths = document.getElementById('initialMonths');
 
-        // Reset toàn bộ viền đỏ trước mỗi lần ấn nút tính toán (phòng trường hợp ấn lần 2)
         xoaLoi(elLoanAmount);
         xoaLoi(elLoanTerm);
         xoaLoi(elInitialRate);
         xoaLoi(elInitialMonths);
 
-        // Lấy giá trị chuỗi văn bản bên trong các ô
         const rawCustomerName = document.getElementById('customerName').value;
         const rawLoanAmountString = elLoanAmount.value.trim();
         const rawTermString = elLoanTerm.value.trim();
@@ -172,12 +186,11 @@
         const rawLaterRateString = document.getElementById('laterRate').value.trim();
         const rawGracePeriodString = document.getElementById('gracePeriod').value.trim();
 
-        // 3. KIỂM TRA ĐIỀU KIỆN TỪNG Ô VÀ BÁO LỖI
-        let thieuThongTin = []; // Mảng chứa tên các mục bị trống
+        let thieuThongTin = []; 
 
         if (rawLoanAmountString === "") {
             thieuThongTin.push("Số Tiền Vay");
-            elLoanAmount.classList.add('input-error'); // Gắn viền đỏ
+            elLoanAmount.classList.add('input-error'); 
         }
         if (rawTermString === "") {
             thieuThongTin.push("Thời Gian Vay");
@@ -192,15 +205,12 @@
             elInitialMonths.classList.add('input-error');
         }
 
-        // Nếu danh sách thiếu thông tin lớn hơn 0, hiển thị cảnh báo và dừng hàm
         if (thieuThongTin.length > 0) {
-            // Biến mảng thành một chuỗi dễ đọc, mỗi tên mục xuống dòng và có dấu gạch đầu dòng
             let thongBaoLoi = "Vui lòng điền các thông tin bắt buộc sau:\n- " + thieuThongTin.join("\n- ");
             alert(thongBaoLoi);
             return;
         }
 
-        // --- NẾU ĐÃ ĐIỀN ĐỦ THÔNG TIN, BẮT ĐẦU TÍNH TOÁN ---
         const customerName = rawCustomerName ? rawCustomerName.toUpperCase() : "CHƯA CẬP NHẬT";
         
         const rawLoanAmount = rawLoanAmountString.replace(/\./g, "");
