@@ -1,10 +1,20 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T1HVHB6K9J"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T1HVHB6K9J');
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bảng Tính Gốc Lãi Vay</title>
+    <title>Bảng Tính Gốc Lãi Vay (Dự Kiến)</title>
     
+    <!-- Các thư viện hỗ trợ xuất Excel và PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
@@ -12,6 +22,7 @@
         body { font-family: 'Times New Roman', Times, serif; font-size: 13pt; background-color: #f0f4f8; margin: 0; padding: 20px; }
         .container { max-width: 1000px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
         h2 { color: #005A9E; text-align: center; margin-bottom: 25px; font-size: 16pt; }
+        
         .grid-form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; }
         .form-group { display: flex; flex-direction: column; }
         label { margin-bottom: 8px; font-weight: bold; color: #333; }
@@ -19,18 +30,14 @@
         .input-yellow { padding: 10px; border: 1px solid #ccc; border-radius: 10px; font-family: 'Times New Roman', Times, serif; font-size: 13pt; background-color: #fff9c4; border-color: #fbc02d; outline: none; transition: all 0.3s; }
         .input-yellow:focus { border-color: #005A9E; box-shadow: 0 0 5px rgba(0, 90, 158, 0.3); }
         
-        .input-error {
-            border-color: #e53935 !important;
-            background-color: #ffebee !important;
-            box-shadow: 0 0 5px rgba(229, 57, 53, 0.5) !important;
-        }
+        .input-error { border-color: #e53935 !important; background-color: #ffebee !important; box-shadow: 0 0 5px rgba(229, 57, 53, 0.5) !important; }
         
         .btn-main { background-color: #005A9E; color: white; padding: 14px 12px 10px 12px; border: none; border-radius: 8px; cursor: pointer; font-family: 'Times New Roman', Times, serif; font-size: 13pt; font-weight: bold; grid-column: span 2; margin-top: 15px; line-height: 1; display: flex; justify-content: center; align-items: center; transition: background-color 0.3s, transform 0.1s; }
         .btn-main:hover { background-color: #003F70; }
         .btn-main:active { transform: scale(0.98); }
 
         .action-buttons { display: flex; justify-content: flex-end; gap: 15px; margin-bottom: 15px; }
-        .btn-export { color: white; padding: 10px 15px; border: none; border-radius: 6px; cursor: pointer; font-family: 'Times New Roman', Times, serif; font-size: 12pt; font-weight: bold; transition: background-color 0.3s; display: flex; justify-content: center; align-items: center; }
+        .btn-export { color: white; padding: 10px 15px; border: none; border-radius: 6px; cursor: pointer; font-family: 'Times New Roman', Times, serif; font-size: 12pt; font-weight: bold; transition: background-color 0.3s; }
         .btn-excel { background-color: #217346; }
         .btn-excel:hover { background-color: #164f2f; }
         .btn-pdf { background-color: #e53935; }
@@ -38,10 +45,7 @@
         
         #resultSection { display: none; margin-top: 30px; animation: fadeIn 0.5s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* Bọc bảng để cuộn ngang trên thiết bị di động */
-        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 8px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; min-width: 600px; /* Đảm bảo bảng không bị bóp méo quá mức */ }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; border-radius: 8px; overflow: hidden; }
         th, td { border: 1px solid #ddd; padding: 10px; text-align: right; }
         th:first-child, td:first-child { text-align: center; }
         th { background-color: #005A9E; color: white; }
@@ -50,50 +54,30 @@
 
         .summary-info { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background-color: #e9f2fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #005A9E; }
         .summary-info p { margin: 5px 0; }
-
-        /* --- BẮT ĐẦU CSS RESPONSIVE CHO ĐIỆN THOẠI & IPAD --- */
-
-        /* Màn hình Tablet (Ví dụ: iPad dọc) */
-        @media (max-width: 768px) {
-            body { padding: 10px; }
-            .container { padding: 20px; }
-        }
-
-        /* Màn hình Điện thoại di động */
-        @media (max-width: 600px) {
-            .grid-form { 
-                grid-template-columns: 1fr; /* Đưa form về 1 cột */
-                gap: 15px; 
-            }
-            .btn-main { 
-                grid-column: span 1; /* Nút bấm chỉ chiếm 1 cột thay vì 2 như trước */
-                padding: 15px;
-            }
-            .summary-info { 
-                grid-template-columns: 1fr; /* Khối tóm tắt thông tin cũng về 1 cột */
-            }
-            .action-buttons { 
-                flex-direction: column; /* Xếp dọc các nút tải Excel/PDF */
-                gap: 10px; 
-            }
-            .btn-export { 
-                width: 100%; /* Các nút tải rộng toàn màn hình để dễ chạm */
-                padding: 12px;
-            }
-        }
-        /* --- KẾT THÚC CSS RESPONSIVE --- */
+        
+        .logo-container { text-align: left; margin: 0 0 20px 0; padding: 0; display: none; }
+        .logo-container img { height: 90px; max-width: 100%; object-fit: contain; object-position: left; display: block; margin: 0 0 8px 0; padding: 0; }
+        .bank-full-name { font-size: 14pt; font-weight: bold; color: #005A9E; margin: 0; padding: 0; text-transform: uppercase; display: block; }
+        .thut-le-chu { margin-left: 10px; }
     </style>
 </head>
-<body>
+<body onload="taiDanhSachNganHang()">
 
 <div class="container">
     <h2>BẢNG TÍNH GỐC LÃI VAY (DỰ KIẾN)</h2>
     
     <div class="grid-form">
         <div class="form-group">
+            <label for="bankSelect">Tên Ngân Hàng:</label>
+            <input list="bankList" id="bankSelect" class="input-yellow" placeholder="Ví dụ: Sacombank..." oninput="capNhatLogo()">
+            <datalist id="bankList"></datalist>
+        </div>
+
+        <div class="form-group">
             <label for="customerName">Tên Khách Hàng:</label>
             <input type="text" id="customerName" class="input-yellow" placeholder="Nhập Tên Khách Hàng...">
         </div>
+        
         <div class="form-group">
             <label for="loanAmount">Số Tiền Vay (VNĐ):</label>
             <input type="text" id="loanAmount" class="input-yellow" placeholder="Ví dụ: 1.000.000.000" oninput="dinhDangTienTe(this); xoaLoi(this)">
@@ -129,44 +113,143 @@
         </div>
 
         <div id="vungInPDF">
-            <h3 style="color: #005A9E; border-bottom: 2px solid #005A9E; padding-bottom: 5px;">Chi Tiết Lịch Trả Nợ (Dự kiến)</h3>
+            <div id="bankLogoContainer" class="logo-container">
+                <img id="bankLogoImg" src="" alt="Logo Ngân Hàng" crossorigin="anonymous">
+                <p id="bankFullNameText" class="bank-full-name thut-le-chu"></p>
+            </div>
+
+            <h3 class="thut-le-chu" style="color: #005A9E; border-bottom: 2px solid #005A9E; padding-bottom: 5px; margin-top: 0;">Chi Tiết Lịch Trả Nợ (Dự kiến)</h3>
             
             <div id="thongTinTomTat" class="summary-info"></div>
 
-            <!-- Đã bọc bảng vào trong div.table-responsive để hỗ trợ cuộn ngang trên điện thoại -->
-            <div class="table-responsive">
-                <table id="bangKetQua">
-                    <thead>
-                        <tr>
-                            <th>Tháng</th>
-                            <th>Tiền Gốc Còn Lại</th>
-                            <th>Gốc Phải Trả</th>
-                            <th>Lãi Phải Trả</th>
-                            <th>Tổng Gốc + Lãi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="resultTableBody"></tbody>
-                </table>
-            </div>
+            <table id="bangKetQua">
+                <thead>
+                    <tr>
+                        <th>Tháng</th>
+                        <th>Tiền Gốc Còn Lại</th>
+                        <th>Gốc Phải Trả</th>
+                        <th>Lãi Phải Trả</th>
+                        <th>Tổng Gốc + Lãi</th>
+                    </tr>
+                </thead>
+                <tbody id="resultTableBody"></tbody>
+            </table>
         </div>
     </div>
 </div>
 
 <script>
-    // Hàm hỗ trợ định dạng số tiền
-    function dinhDangTienTe(input) {
-        let giaTri = input.value.replace(/\D/g, "");
-        if (giaTri !== "") {
-            input.value = parseInt(giaTri, 10).toLocaleString('vi-VN');
+    // Danh sách đầy đủ các ngân hàng
+    const danhSachNganHang = [
+        { shortName: "VietinBank", name: "Ngân hàng TMCP Công thương Việt Nam" },
+        { shortName: "Vietcombank", name: "Ngân hàng TMCP Ngoại thương Việt Nam" },
+        { shortName: "BIDV", name: "Ngân hàng TMCP Đầu tư và Phát triển Việt Nam" },
+        { shortName: "Agribank", name: "Ngân hàng Nông nghiệp và Phát triển Nông thôn Việt Nam" },
+        { shortName: "OCB", name: "Ngân hàng TMCP Phương Đông" },
+        { shortName: "MB", name: "Ngân hàng TMCP Quân Đội" },
+        { shortName: "Techcombank", name: "Ngân hàng TMCP Kỹ thương Việt Nam" },
+        { shortName: "ACB", name: "Ngân hàng TMCP Á Châu" },
+        { shortName: "VPBank", name: "Ngân hàng TMCP Việt Nam Thịnh Vượng" },
+        { shortName: "TPBank", name: "Ngân hàng TMCP Tiên Phong" },
+        { shortName: "SACOMBANK", name: "Ngân hàng TMCP Sài Gòn Tài Lộc" },
+        { shortName: "HDBank", name: "Ngân hàng TMCP Phát triển Thành phố Hồ Chí Minh" },
+        { shortName: "BVBank", name: "Ngân hàng TMCP Bản Việt (BVBank)" },
+        { shortName: "SCB", name: "Ngân hàng TMCP Sài Gòn" },
+        { shortName: "VIB", name: "Ngân hàng TMCP Quốc tế Việt Nam" },
+        { shortName: "SHB", name: "Ngân hàng TMCP Sài Gòn - Hà Nội" },
+        { shortName: "Eximbank", name: "Ngân hàng TMCP Xuất Nhập khẩu Việt Nam" },
+        { shortName: "MSB", name: "Ngân hàng TMCP Hàng Hải Việt Nam" },
+        { shortName: "CAKE", name: "Ngân hàng số CAKE by VPBank" },
+        { shortName: "Ubank", name: "Ngân hàng số Ubank by VPBank" },
+        { shortName: "Timo", name: "Ngân hàng số Timo by Bản Việt" },
+        { shortName: "ViettelMoney", name: "Tổng Công ty Dịch vụ số Viettel" },
+        { shortName: "VNPTMoney", name: "Tập đoàn Bưu chính Viễn thông Việt Nam" },
+        { shortName: "SaigonBank", name: "Ngân hàng TMCP Sài Gòn Công Thương" },
+        { shortName: "BacABank", name: "Ngân hàng TMCP Bắc Á" },
+        { shortName: "BaoVietBank", name: "Ngân hàng TMCP Bảo Việt" },
+        { shortName: "VietBank", name: "Ngân hàng TMCP Việt Nam Thương Tín" },
+        { shortName: "LPbank", name: "Ngân hàng TMCP Lộc Phát Việt Nam (LPBank)" },
+        { shortName: "KienLongBank", name: "Ngân hàng TMCP Kiên Long" },
+        { shortName: "VietABank", name: "Ngân hàng TMCP Việt Á" },
+        { shortName: "NCB", name: "Ngân hàng TMCP Quốc Dân" },
+        { shortName: "Vikki", name: "Ngân hàng Số Vikki" },
+        { shortName: "ABBank", name: "Ngân hàng TMCP An Bình" },
+        { shortName: "MBV", name: "Ngân hàng TNHH MTV Việt Nam Hiện Đại" },
+        { shortName: "CBBank", name: "Ngân hàng Thương mại TNHH MTV Xây dựng Việt Nam" },
+        { shortName: "GPBank", name: "Ngân hàng Thương mại TNHH MTV Dầu Khí Toàn Cầu" },
+        { shortName: "PGBank", name: "Ngân hàng TMCP Thịnh vượng và Phát triển" },
+        { shortName: "ShinhanBank", name: "Ngân hàng TNHH MTV Shinhan Việt Nam" },
+        { shortName: "HLBank", name: "Ngân hàng TNHH MTV Hong Leong Việt Nam" },
+        { shortName: "StandardChartered", name: "Ngân hàng TNHH MTV Standard Chartered Việt Nam" },
+        { shortName: "IBK", name: "Ngân hàng Công nghiệp Hàn Quốc" },
+        { shortName: "Woori", name: "Ngân hàng TNHH MTV Woori Việt Nam" },
+        { shortName: "VRB", name: "Ngân hàng Liên doanh Việt - Nga" },
+        { shortName: "PublicBank", name: "Ngân hàng TNHH MTV Public Việt Nam" },
+        { shortName: "CIMB", name: "Ngân hàng TNHH MTV CIMB Việt Nam" },
+        { shortName: "UOB", name: "Ngân hàng TNHH MTV UOB Việt Nam" },
+        { shortName: "CitiBank", name: "Ngân hàng Citibank N.A." },
+        { shortName: "NamAbank", name: "Ngân hàng Nam Á" }
+    ];
+
+    let nganHangDuocChon = null; 
+
+    // Hàm tạo danh sách thả xuống
+    function taiDanhSachNganHang() {
+        const dataList = document.getElementById('bankList');
+        dataList.innerHTML = ''; 
+        
+        danhSachNganHang.forEach(bank => {
+            const option = document.createElement('option');
+            option.value = bank.shortName; 
+            dataList.appendChild(option);
+        });
+    }
+
+    // ĐÃ CẬP NHẬT: Hàm lấy logo từ kho 'logochuan'
+    function capNhatLogo() {
+        const tenNH = document.getElementById('bankSelect').value.trim();
+        const logoContainer = document.getElementById('bankLogoContainer');
+        const logoImg = document.getElementById('bankLogoImg');
+        const fullNameText = document.getElementById('bankFullNameText');
+
+        nganHangDuocChon = danhSachNganHang.find(bank => 
+            bank.shortName.toLowerCase() === tenNH.toLowerCase()
+        );
+
+        if (nganHangDuocChon) {
+            fullNameText.innerText = nganHangDuocChon.name; 
+            logoContainer.style.display = 'block'; 
+            
+            // 1. Ép tên thành chữ thường
+            let tenBietDanh = nganHangDuocChon.shortName.toLowerCase();
+            
+            // 2. Xử lý ngoại lệ cho MBBank
+            if (tenBietDanh === 'mb') {
+                tenBietDanh = 'mbbank';
+            }
+            
+            // 3. Ghép đuôi file và tạo URL thô trỏ về kho 'logochuan'
+            let tenFileAnh = tenBietDanh + ".png";
+            let linkGitHub = `https://raw.githubusercontent.com/HAT1994/logochuan/main/${tenFileAnh}`;
+            
+            // In ra Console để dễ dàng kiểm tra
+            console.log("Hệ thống đang tải ảnh chuẩn từ: " + linkGitHub);
+            logoImg.src = linkGitHub;
+            
         } else {
-            input.value = "";
+            logoImg.src = ''; 
+            fullNameText.innerText = '';
+            logoContainer.style.display = 'none'; 
         }
     }
 
-    // Hàm xóa viền đỏ khi người dùng gõ vào ô
-    function xoaLoi(element) {
-        element.classList.remove('input-error');
+    function dinhDangTienTe(input) {
+        let giaTri = input.value.replace(/\D/g, "");
+        if (giaTri !== "") input.value = parseInt(giaTri, 10).toLocaleString('vi-VN');
+        else input.value = "";
     }
+
+    function xoaLoi(element) { element.classList.remove('input-error'); }
 
     function calculateLoan() {
         const elLoanAmount = document.getElementById('loanAmount');
@@ -174,10 +257,7 @@
         const elInitialRate = document.getElementById('initialRate');
         const elInitialMonths = document.getElementById('initialMonths');
 
-        xoaLoi(elLoanAmount);
-        xoaLoi(elLoanTerm);
-        xoaLoi(elInitialRate);
-        xoaLoi(elInitialMonths);
+        xoaLoi(elLoanAmount); xoaLoi(elLoanTerm); xoaLoi(elInitialRate); xoaLoi(elInitialMonths);
 
         const rawCustomerName = document.getElementById('customerName').value;
         const rawLoanAmountString = elLoanAmount.value.trim();
@@ -188,46 +268,32 @@
         const rawGracePeriodString = document.getElementById('gracePeriod').value.trim();
 
         let thieuThongTin = []; 
-
         if (rawLoanAmountString === "") { thieuThongTin.push("Số Tiền Vay"); elLoanAmount.classList.add('input-error'); }
         if (rawTermString === "") { thieuThongTin.push("Thời Gian Vay"); elLoanTerm.classList.add('input-error'); }
         if (rawInitialRateString === "") { thieuThongTin.push("Lãi Suất Ưu Đãi"); elInitialRate.classList.add('input-error'); }
         if (rawInitialMonthsString === "") { thieuThongTin.push("Số Tháng Hưởng Ưu Đãi"); elInitialMonths.classList.add('input-error'); }
 
         if (thieuThongTin.length > 0) {
-            let thongBaoLoi = "Vui lòng điền các thông tin bắt buộc sau:\n- " + thieuThongTin.join("\n- ");
-            alert(thongBaoLoi);
+            alert("Vui lòng điền các thông tin bắt buộc sau:\n- " + thieuThongTin.join("\n- "));
             return;
         }
 
         const customerName = rawCustomerName ? rawCustomerName.toUpperCase() : "CHƯA CẬP NHẬT";
-        const rawLoanAmount = rawLoanAmountString.replace(/\./g, "");
-        const loanAmount = parseFloat(rawLoanAmount);
+        const loanAmount = parseFloat(rawLoanAmountString.replace(/\./g, ""));
         const totalMonths = parseInt(rawTermString);
-        
         const initialRatePercent = parseFloat(rawInitialRateString);
         const initialRate = initialRatePercent / 100 / 12; 
         const initialMonths = parseInt(rawInitialMonthsString);
         
-        let laterRatePercent;
-        if (rawLaterRateString === "") {
-            laterRatePercent = initialRatePercent;
-        } else {
-            laterRatePercent = parseFloat(rawLaterRateString);
-        }
+        let laterRatePercent = rawLaterRateString === "" ? initialRatePercent : parseFloat(rawLaterRateString);
         const laterRate = laterRatePercent / 100 / 12; 
-        
         const gracePeriod = rawGracePeriodString ? parseInt(rawGracePeriodString) : 0;
 
         if (isNaN(loanAmount) || loanAmount <= 0 || isNaN(totalMonths) || totalMonths <= 0) {
-            alert("Vui lòng nhập các con số hợp lệ và lớn hơn 0!");
-            return;
+            alert("Vui lòng nhập các con số hợp lệ và lớn hơn 0!"); return;
         }
 
-        let htmlAnHanGoc = '';
-        if (gracePeriod > 0) {
-            htmlAnHanGoc = `<p><strong>Thời gian ân hạn gốc:</strong> ${gracePeriod} tháng</p>`;
-        }
+        let htmlAnHanGoc = gracePeriod > 0 ? `<p><strong>Thời gian ân hạn gốc:</strong> ${gracePeriod} tháng</p>` : '';
 
         document.getElementById('thongTinTomTat').innerHTML = `
             <div>
@@ -250,41 +316,35 @@
         const monthlyPrincipal = principalMonths > 0 ? loanAmount / principalMonths : 0;
 
         for (let month = 1; month <= totalMonths; month++) {
-            let currentPrincipalDue = 0;
-            if (month > gracePeriod) { currentPrincipalDue = monthlyPrincipal; }
-
+            let currentPrincipalDue = month > gracePeriod ? monthlyPrincipal : 0;
             let currentRate = (month <= initialMonths) ? initialRate : laterRate;
             let currentInterestDue = remainingPrincipal * currentRate;
             let totalMonthlyPayment = currentPrincipalDue + currentInterestDue;
 
-            const row = `<tr>
+            tableBody.innerHTML += `<tr>
                 <td>${month}</td>
                 <td>${Math.round(remainingPrincipal).toLocaleString('vi-VN')}</td>
                 <td>${Math.round(currentPrincipalDue).toLocaleString('vi-VN')}</td>
                 <td>${Math.round(currentInterestDue).toLocaleString('vi-VN')}</td>
                 <td><b>${Math.round(totalMonthlyPayment).toLocaleString('vi-VN')}</b></td>
             </tr>`;
-            
-            tableBody.innerHTML += row;
 
             remainingPrincipal -= currentPrincipalDue;
             if (remainingPrincipal < 0) remainingPrincipal = 0;
         }
-
         document.getElementById('resultSection').style.display = 'block';
     }
 
     function taiExcel() {
         let rawName = document.getElementById('customerName').value.trim();
         let tenKH = rawName ? rawName.toUpperCase() : 'KHACH_HANG';
-        let tenFile = tenKH.replace(/\s+/g, '_');
-        
+        let tenNganHangXuatExcel = nganHangDuocChon ? nganHangDuocChon.name.toUpperCase() : "CHƯA CẬP NHẬT";
         let soTienVayExcel = Number(document.getElementById('loanAmount').value.replace(/\./g, ""));
-        let gracePeriod = document.getElementById('gracePeriod').value.trim();
-        let finalGracePeriod = gracePeriod ? Number(gracePeriod) : 0;
+        let finalGracePeriod = Number(document.getElementById('gracePeriod').value.trim() || 0);
 
         let dataExcel = [
             ["THÔNG TIN KHOẢN VAY"],
+            ["Ngân Hàng:", tenNganHangXuatExcel], 
             ["Tên Khách Hàng:", tenKH],
             ["Số Tiền Vay (VNĐ):", soTienVayExcel],
             ["Thời Gian Vay (Tháng):", Number(document.getElementById('loanTerm').value)],
@@ -292,19 +352,11 @@
             ["Số Tháng Hưởng Ưu Đãi:", Number(document.getElementById('initialMonths').value)]
         ];
 
-        if (finalGracePeriod > 0) {
-            dataExcel.push(["Thời Gian Ân Hạn Gốc (Tháng):", finalGracePeriod]);
-        }
-
-        dataExcel.push(
-            [], 
-            ["CHI TIẾT LỊCH TRẢ NỢ (DỰ KIẾN)"],
-            ["Tháng", "Tiền Gốc Còn Lại", "Gốc Phải Trả", "Lãi Phải Trả", "Tổng Gốc + Lãi"]
-        );
+        if (finalGracePeriod > 0) { dataExcel.push(["Thời Gian Ân Hạn Gốc (Tháng):", finalGracePeriod]); }
+        dataExcel.push([], ["CHI TIẾT LỊCH TRẢ NỢ (DỰ KIẾN)"], ["Tháng", "Tiền Gốc Còn Lại", "Gốc Phải Trả", "Lãi Phải Trả", "Tổng Gốc + Lãi"]);
 
         let table = document.getElementById("bangKetQua");
         let rows = table.getElementsByTagName("tr");
-        
         for (let i = 1; i < rows.length; i++) {
             let cells = rows[i].getElementsByTagName("td");
             let rowData = [];
@@ -319,25 +371,26 @@
         let worksheet = XLSX.utils.aoa_to_sheet(dataExcel);
         let workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Lich_Tra_No");
-        
-        XLSX.writeFile(workbook, `Lich_Tra_No_${tenFile}.xlsx`);
+        XLSX.writeFile(workbook, `Lich_Tra_No_${tenKH.replace(/\s+/g, '_')}.xlsx`);
     }
 
     function taiPDF() {
         let rawName = document.getElementById('customerName').value.trim();
         let tenKH = rawName ? rawName.toUpperCase() : 'KHACH_HANG';
-        let tenFile = tenKH.replace(/\s+/g, '_');
-
         let element = document.getElementById("vungInPDF");
+        
         let opt = {
             margin:       [15, 10, 15, 10], 
-            filename:     `Lich_Tra_No_${tenFile}.pdf`,
+            filename:     `Lich_Tra_No_${tenKH.replace(/\s+/g, '_')}.pdf`,
             image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2 },
+            html2canvas:  { 
+                scale: 2,
+                useCORS: true, 
+                allowTaint: true
+            }, 
             jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
             pagebreak:    { avoid: 'tr' } 
         };
-
         html2pdf().set(opt).from(element).save();
     }
 </script>
